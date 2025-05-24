@@ -1,0 +1,77 @@
+\section{Preliminaries}
+Not all of the contents of this chapter are strictly necessary for further study of quantum computation, its meant so the reader can get acquainted with the intuition behind quantum mechanics and its interpretation to better understand the algorithms.
+\subsection{Wave function}
+In classical mechanics, the state of a particle is fully described using its position and momentum. In quantum it is described by wave function - $\Psi$, which is a solution to the Schrödinger equation 
+\begin{align*}
+  i \hbar \frac{d}{dx} \psi=-\frac{\hbar^2}{2m}\nabla^2 \psi + V(x,y)\psi 
+\end{align*}
+In spite of $\psi$ being the solution to the equation, the physically measurable value is $|\psi|^2$. All the mathematical formalism matches the physical experiments. However, we are left with the conundrum of how to interpret this. \\\\
+\subsection{Probabilistic Interpretation}
+According to the most widely accepted explanation postulated by Niels Bohr - the Copenhagen interpretation - $|\psi|^2$ represents a probabilistic density of the position of the particle in the given moment.
+\begin{align*}
+  |\psi(\vec{x},t)|^2=\rho(\vec{x},t)
+\end{align*}
+Moreover this interpretation stipulates that before we measure the state of the particle it is in no particular state, it is in superposition of all the possible spaces. Only after measurement does its state change immediately at random with $|\psi|^2$ as its density function, which is called quantum wave collapse.\\
+
+\subsection{Notation}
+Quantum states form vector spaces on $\mathbb{C}$, known as the Hilbert space and denoted as $\mathcal{H}$, their members are column vectors, which in dirac notation are denoted as $\ket{\psi}$.\\ We can similarly define a dual space $\mathcal{H}^*$ - the space of functions $\mathcal{H} \rightarrow \mathbb{C}$, its members are row vectors in the Dirac notation denoted as $\bra{\psi}$.\\\\
+$\bra{\psi}$ is a hermitian conjugate of $\ket{\psi}$, which means that if $$\ket{\psi}=\begin{bmatrix}a_1 \\a_2 \\\vdots \\a_n\end{bmatrix}$$ then $$\bra{\psi}=\begin{bmatrix}a_1^*&a_2^* &\dots & a_n^*\end{bmatrix}$$
+We can thus define an inner (scalar) product between $\ket{\psi}=\begin{bmatrix}a_1^ &\dots & a_n\end{bmatrix}^T$ and $\ket{\theta}=\begin{bmatrix}b_1 &\dots & b_n\end{bmatrix}^T$ as
+$$\braket{\psi| \theta}=a_1^*b_1 + a_2^* b_2 + \dots + a_n^* b_n$$ 
+\subsection{Measurement}
+As we discussed earlier, before measurement the quantum state is in no particular state, but only after measurement it collapses to one of the states. We can calculate the probability of obtaining the state $\ket{\phi}$ using inner product 
+$$P(\ket{\phi_i})=|\braket{\phi_i | \psi}|^2$$
+We interpreted $\psi$ as the density function of probability, therefore it must be normalised, $\braket{\psi|\psi}=1$, to ensure that the probabilities of obtaining the states sum up to 1.
+\subsection{Operators}
+Operators are functions $\mathcal{H} \rightarrow \mathcal{H}$, for operator $Q$:
+$$Q \ket{\psi}=\ket{Q\psi}=\ket{\psi'}\in \mathcal{H}$$
+We commonly use shorthand notation $$\braket{\psi | Q| \theta} := \braket{\psi | Q  \theta}$$
+In quantum mechanics we typically only use linear operators, such that
+$$Q(a_1 \ket{\psi_1}+a_2 \ket{\psi_2})=a_1 Q \ket{\psi_1} + a_2 Q \ket{\psi_2}$$ 
+Hermitian adjoint $Q^\dagger$ to $Q$ is an operator such that 
+$$\braket{\psi|Q\theta}=\braket{Q^\dagger \psi |\theta}$$
+Operator $Q$ is called hermitian if $Q=Q^\dagger$.
+
+\subsection{Qubit}
+The qubit is the quantum analogue to the bit; it is the simplest quantum mechanical system. It has a two-dimensional state space, and thus its orthonormal basis is formed by two orthogonal vectors $\ket{0}$ and $\ket{1}$. By convention, we use $\ket{0}=[1,0]$ and $\ket{1}=[0,1]$. An arbitrary qubit $\ket{\psi}$ can therefore be fully described as
+\begin{align*}
+    \ket{\psi}=a\ket{0}+b\ket{1}
+\end{align*}
+Qubit must satisfy the normalization factor for state vectors
+\begin{align*}
+    \braket{\psi|\psi}=1
+\end{align*}
+which for qubits means that
+\begin{align*}
+    a^2+b^2=1
+\end{align*}
+The key difference between a bit and a qubit is that when a bit can only be in either state $0$ or $1$, qubit can be in superposition of states $\ket{0}, \ket{1}$, meaning that it is in both states at once and only after measurement it becomes one of them with probabilities proportional to $a,b$.
+
+
+\subsection{Quantum gates}
+Quantum gates are quantum operators operating on a reduced number of qubits. Similar to classical logic gates, they are the building block of quantum circuits. The most commonly used gates are 
+\begin{itemize}
+  \item Pauli-X, the not gate $X=\sigma_x=\begin{pmatrix}0 & 1 \\ 1 & 0 \end{pmatrix}$
+  \item Pauli-Y, $Y=\sigma_y=\begin{pmatrix}0 & -i \\ i & 0 \end{pmatrix}$
+  \item Pauli-Z, $Z=\sigma_z=\begin{pmatrix}1 & 0 \\ 0 & -1 \end{pmatrix}$
+  \item Hadamard, $H=\frac{1}{\sqrt{2}}\begin{pmatrix}1 & 1 \\ 1 & -1 \end{pmatrix}$
+  \item Phase shift - $P(\phi)=\begin{pmatrix}1 & 0 \\ 0 & e^{i\phi} \end{pmatrix}$, it maps $\ket{0}\rightarrow \ket{0}$ and $\ket{1}\rightarrow e^{i\phi}\ket{1}$.
+\end{itemize}
+\subsection{Entanglement}
+Consider the following two qubit state
+\begin{align}
+    \ket{\psi}=\frac{\ket{00}+\ket{11}}{\sqrt{2}}
+\end{align}
+this notation means that either both qubits are $\ket{0}$ or both are $\ket{1}$.
+If there are no single qubits $\ket{a}$, $\ket{b}$ such that $\ket{\psi}=\ket{a}+\ket{b}$ then we say that $\ket{\psi}$ is an entangled state.\\\\
+\subsubsection{EPR paradox}
+Quantum entanglement is a fundamental concept from which we can conclude seemingly paradoxical results.\\\\
+Consider two entangled qubits from the states $\ket{\psi}$, $A$ and $B$. Before measurement they are in superposition between states $\ket{0}$ and $\ket{1}$ and entangled in such a way that after measurement both become $\ket{0}$ or both become $\ket{1}$. Now, suppose that we give qubit $A$ to Alice and $B$ to Bob, Alice, and Bob then travel far apart. If Alice performs a measurement on her qubit, it instantaneously collapses to one of the states. Bob can then quickly measure his qubit and know exactly what value Alice's qubit is in, in spite of the distance between them. This process seems to convey information faster than light.\\\\
+This process is a simplification of the famous EPR paradox formed by Einstein Podolsky and Rosen in 1935 \cite{epr}. It can have two possible explanations; either during the thought experiment, we made an incorrect assumption or there is some hidden variable in the qubits.\\
+We made the following assumptions.
+\begin{itemize}
+    \item (Completeness) Every element of reality has a counterpart in theory
+    \item (Reality) We can predict with certainty value of physical quantity without disturbing the system.
+    \item (Locality) Element cannot be instantaneously affected by measurements performed on another system distant from them
+\end{itemize}
+As Bell showed theoretically \cite{bell}, and then later was shown experimentally by Alain Aspect \cite{aspect} quantum mechanics cannot be explained by including any hidden variables, therefore if we assume quantum mechanics to be complete either reality or locality assumption must be abandoned. 

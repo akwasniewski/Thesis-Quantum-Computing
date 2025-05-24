@@ -1,0 +1,40 @@
+\section{Shor's Algorithm}
+Shor's Algorithm allows us to solve integer factorization problem in polynomial time using quantum computer. That is, given integer N the algorithm finds the set of all prime factors of N - prime number that divide N. Many attempts have been made to find a classical, polynomial algorithm with no apparent success, the best known classical solution is roughly $O(2^{(\log N)^{1/3}})$ \cite{thebook}, as a result Shor's algorithm is considered the strongest premise that $\mathtt{BQP}$ is not equal to $\mathtt{BPP}$.
+\subsection{Reduction to order-finding}
+To achieve such an astounding reduction in complexity we have to reduce our problem of finding prime factors to a simpler problem. We easily see that to find all prime factors it is sufficient to be able to find a single non trivial prime factor, divide the original number by it and run the algorithm again. If we continue this procedure and store found factors we will solve the original problem as every number has a unique prime factorization.
+\\\\
+We now want to reduce this problem further to the problem of order finding. For a number $N$ we take a random value $a$ from the set of $\{2,\dots,N-1\}$. If we find the smallest number $s$ such that
+\begin{align*}
+    a^s=1\mod{N}
+\end{align*}
+that is, find the period of $a$ and assume that $s$ is odd than we can rewrite it as
+\begin{align*}
+    a^s-1&=0 \mod{N}\\
+    (a^{s/2}+1)(a^{s/2}-1)&=0 \mod{N}\\
+    (a^{s/2}+1)(a^{s/2}-1)&=kN
+\end{align*}
+now, if $a^{s/2}<N$ then we now that
+\begin{align*}
+    N|(a^{s/2}-1)(a^{s/2}+1)
+\end{align*}
+Note that from the condition $a^{s/2}<N$ one could assume that $a^{s/2}+1$ can be $N$, however this would imply that $a^{s/2}=1 \mod{N}$, which contradicts the fact that $s$ is the smallest number for which $a^{s}=1 \mod{N}$. Therefore both $\gcd(a^{s/2}\pm 1,N)<N$.
+\\\\
+From this we see that $\gcd(a^{s/2}\pm 1,N)$ are a factors of $N$, which we can compute classically, in polynomial time using Euclid's algorithm.\\\\
+During the process we made two assumptions, $s$ is even and $a^{s/2}\neq \pm 1 \mod{N}$. Both of those conditions are easily checked classically, we can also bound the probability of it not happening (s being valid) to be at least 1/4 \cite{thebook}. If it happens, we simply choose different $a$ and repeat the process. 
+\\\\
+We see that we reduced our factoring problem to the order finding problem - finding the order of a number in $\mathbb{Z}_N$. This problem itself is also $\mathtt{NP}$-hard using classical approach, however we can exploit quantum Fourier transform to prove that it belongs to $\mathtt{BQP}$.
+\input{chapters/4fourier}
+\input{chapters/4order}
+\subsection{Bringing it together}
+In the algorithm we classically check if algorithm is prime, which can be done with AKS algorithm in deterministic, polynomial time \cite{Agrawal2004}. We also compute greatest common divisor which can be solved using Euclid in algorithm $O(\log{(m+n)})$ \cite{cormen2009}.
+\\\\
+We use the following subroutine recursively until $N$ is prime. In each subsequent call we 
+\begin{itemize}
+    \item Check if $N$ is not prime, if it is return it.
+    \item Check if $N$ is even, if it is return $2$.
+    \item Draw number $a$ uniformly from $\{2, \dots, N-1\}$.
+    \item Compute the order $s$ of $a$.
+    \item Check if $s$ is even and $y^{r/2}\neq \pm1 \mod N$, if not go back to step 3.
+    \item Compute $\gcd(a^{s/2}\pm 1,N)$ and return non-trivial factors.
+\end{itemize}
+We use the check $y^{r/2}\neq \pm1 \mod N$ to ensure that we cannot find two non-trivial factors.\\

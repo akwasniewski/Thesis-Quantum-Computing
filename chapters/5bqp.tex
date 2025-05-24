@@ -1,0 +1,26 @@
+\section{BQP and beyond}
+In analogue to $\mathtt{BPP}$ (Bounded probabilistic polynomial), $\mathtt{BQP}$ is defined as containing all problems solvable by a quantum computer with error probability of at most $c<1/2$ for all problem instances. 
+\subsection{BQP relations with classical complexity classes}
+We know that 
+$$\mathtt{BPP} \subseteq \mathtt{BQP} \subseteq \mathtt{PP} \subseteq \mathtt{PSPACE}$$ 
+\subsubsection{BPP}
+It is trivial to show that $\mathtt{BQP}$ contains $\mathtt{BPP}$ as a quantum computer can do all operations, as we can simply simulate a classical computer on a quantum computer. Shor's algorithm exponential reduction is strong evidence that in fact, $\mathtt{BQP}$ might be bigger than $\mathtt{BPP}$, as it solves factoring, a well-studied problem efficiently. Unlike other problems that were thought to be not in $\mathtt{BPP}$ such as linear programming, we don't even have any heuristical solution that can produce correct output given some constraints.  
+\subsubsection{NP}
+We don't know the relation between $\mathtt{BQP}$ and $\mathtt{NP}$. Using Grover's search on quantum computers, we can get quadratic speed up of NP complete problems; however, this approach is not in BPP. It is widely believed that $\mathtt{NP} \nsubseteq \mathtt{BQP}$; however, we don't have any formal way to prove it. 
+\subsubsection{PSPACE}
+We can show that using polynomial space and exponential time, we can simulate quantum computation, which implies that in fact $\mathtt{BQP} \subset \mathtt{PSPACE}$. \\\\
+In order to simulate a $T$ step quantum computation running on $m$-bit register, we need procedure $\mathtt{coeff}(x,i)$, which computes the coefficients of the quantum state at each step $i$ given input $x$. Each quantum gate operation modifies at most 3 bits (or can be written as a combination of such), therefore to compute $\mathtt{coeff}$ on inputs $x,i$ we need at most 8 recursive calls to $\mathtt{coeff}(x', i-1)$ as $x$ and $x'$ differ at most in 3 places. We can reuse the space used by each recursive call, therefore space used to calculate $\mathtt{coeff}(x,i)$ is at most space required to calculate $\mathtt{coeff}((x,i-1)$ plus space required to store the coefficient itself. If we denote space required to calculate $\mathtt{coeff}(x,i)$ as $S(i)$ and the number of bits in the coefficient as $b$, it can be written as 
+$$S(i)\leq S(i-1)+O(b)$$
+Therefore $S(T)$ is polynomial. \\\\
+To calculate the probability of getting a certain property, we just sum up the coefficients in $\mathtt{coeff}(x,T)$ for all $x$ satisfying that property. Thus we can simulate quantum computation classically using polynomial space.
+\subsubsection{PP}
+$\mathtt{PP}$ is a complexity defined as containing all problems solvable in polynomial time, with error probability of less than $1/2$ for all instances. It can be seen as similar to $\mathtt{BPP}$ with $c=1/2$ (note that for $\mathtt{BPP}$ $c>1/2$), meaning that problems in $\mathtt{BPP}$ are a subset of $\mathtt{PP}$ for which efficient algorithms exist.\\\\
+This restriction on error probability makes it significantly larger than $\mathtt{BPP}$, it contains both $\mathtt{NP}$ and $\mathtt{coNP}$, moreover, it currently serves as the best upper bound for $\mathtt{BQP}$\cite{pp_bqp} 
+\subsection{Class QMA}
+$\mathtt{QMA}$ (Quantum Merlin Arthur) is the quantum analogue to $\mathtt{NP}$. It contains all problems for which we can check the answer in quantum polynomial time. It trivially contains $\mathtt{BQP}$, however, similarly to pair $\mathtt{P}$, $\mathtt{NP}$ their exact relation is still unknown.
+\subsubsection{Quantum k-SAT}
+An example of a $\mathtt{QMA}$-complete problem is a quantum $k$-SAT, $k>2$. It is defined similarly to classical $k$-SAT.\\
+As input it gets $m$ hermitian operators $Q_1,\dots, Q_m$, each acting on $k$ qubits out of total $n$ qubits, the goal is to determine whether there exists an $n$-qubit quantum state $\ket{\psi}$ such that 
+$$\forall_i: Q_i \ket{\psi}=0$$ 
+Quantum $3$-SAT has been proven to be $\mathtt{QMA}$ complete in 2013 by D. Gosset and DD. Nagaj \cite{gosset}. From this result, it follows that $k$-SAT, $k>2$ is $\mathtt{QMA}$ complete. It is worth noting that quantum $2$-SAT can be solved in just polynomial time as shown by S. Bravyi in 2006 \cite{brav}. 
+

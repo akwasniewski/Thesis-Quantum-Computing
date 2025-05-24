@@ -1,0 +1,94 @@
+\ProvidesPackage{styl-tcs}
+\usepackage{setspace}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage[
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    urlcolor=black,
+    pdfborder={0 0 0}
+]{hyperref}
+\usepackage{wrapfig}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{caption}
+\usepackage{mathtools}
+\usepackage{braket}
+\usepackage[braket, qm]{qcircuit}
+% Header styles
+\usepackage{fancyhdr}
+
+\usepackage{mathrsfs}
+\pagestyle{fancy}
+\fancyhf{}
+
+\fancyhead[L]{\textbf{\small Quantum Computing}\\\textit{\footnotesize Andrzej Antoni Kwaśniewski}
+}\fancyhead[R]{\thepage}
+
+\fancyfoot{}
+
+\renewcommand{\headrulewidth}{0pt}
+%\renewcommand{\footruledth}{0.4pt}
+
+
+\titleformat{\paragraph}
+{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+%\titlespacing*{\paragraph}
+\usepackage{array}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\definecolor{mybackground}{rgb}{0.120, 0.120, 0.150}
+\newif\ifeditmode
+\DeclareOption{editmode}{\editmodetrue}
+\ProcessOptions\relax
+\ifeditmode
+    \pagecolor{mybackground}  % Apply background color
+    \color{white}      % Light text
+    \usepackage{lmodern}  % Readable font
+\fi
+\usepackage{etoolbox} % For patching commands
+\makeatletter
+\patchcmd{\start@align}{\st@rredfalse}{\st@rredtrue}{}{}
+\makeatother
+
+\newcommand{\complex}{\mathbb{C}}
+\newcommand{\real}{\mathbb{C}}
+
+
+\usepackage{chngcntr}
+\counterwithout{section}{chapter}
+\setcounter{secnumdepth}{2}
+\renewcommand{\thechapter}{\Roman{chapter}}
+% Move the top of the header closer to the page top
+\titleformat{\section}[display]{\Large\bfseries\filcenter}{\thesection}{0.5em}{}
+% Move the top of the header closer to the page top
+% Move the top of the header closer to the page top
+\titleformat{\subsection}{\large\bfseries\filcenter}{\thesubsection}{0.5em}{}
+\counterwithin*{footnote}{page}
+
+
+\titleformat{\chapter}[display]
+  {\normalfont\centering\bfseries\Huge} % formatting
+  {Rozdział \thechapter}                 % label
+  {20pt}                                % space between label and title
+  {\LARGE}                              % formatting of title
+\patchcmd{\chapter}{\thispagestyle{plain}}{\thispagestyle{fancy}}{}{}
+
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\setcounter{tocdepth}{2}
+
+
