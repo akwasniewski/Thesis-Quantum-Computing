@@ -8,7 +8,7 @@ The Quantum Fourier Transform is formally defined by the operation acting on a q
 We will compute it sequentially for each qubit, for $i$-th qubit we first apply a Hadamard gate on it to allow quantum interference, next we apply $n-i$ controlled phase gates to qubit $i$ taking qubits $\{i+1, n\}$ as control. Controlled phase gates take two qubits, target and control and apply a phase shift $e^{\pi / 2^k}$ to the target qubit if the control qubit is in state $\ket{1}$, where $k$ denotes the distance between qubits, we attach a visualization of the quantum circuit for $3$ qubit system \ref{fig:qft}.
 \begin{figure}[ht!]
     \centering
-    \includegraphics[width=0.6\linewidth]{figures/qft.pdf}
+    \includegraphics[width=0.7\linewidth]{figures/qft.pdf}
     \caption{QFT diagram for an example, 3 qubit system}
     \label{fig:qft}
 \end{figure}

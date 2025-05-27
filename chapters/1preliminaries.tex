@@ -1,28 +1,48 @@
-\section{Preliminaries}
-Not all of the contents of this chapter are strictly necessary for further study of quantum computation, its meant so the reader can get acquainted with the intuition behind quantum mechanics and its interpretation to better understand the algorithms.
-\subsection{Wave function}
-In classical mechanics, the state of a particle is fully described using its position and momentum. In quantum it is described by wave function - $\Psi$, which is a solution to the Schrödinger equation 
+\section{Introduction and preliminaries}
+Quantum computing has emerged as a promising computational paradigm, which harnesses advances in quantum mechanics to process information in an entirely new way. It has the potential to outperform classical computing in areas such as cryptography and simulation of physical systems; it promises to solve certain classically hard problems, such as integer factorisation in polynomial time.
+\\\\This thesis serves as a concise introduction to quantum computing, it is intended for readers with a basic understanding of classical complexity theory and linear algebra. In the first chapter we begin with an overview of quantum mechanics, followed by relevant notation and algebraic concepts. The next three chapters are focused on presenting the most influential quantum algorithms: Grover's search algorithm, Simon's algorithm and Shor's algorithm for factorisation. In the sixth chapter we explore quantum complexity classes - $\mathtt{BQP}$ and $\mathtt{QMA}$ - and their relation to their classical counterparts. The focus is on the theoretical, mathematical formulation of set problems, their physical implementation is generally beyond the scope of this work; however, the thesis ends in a brief discussion of current prospects of implementing debated algorithms on real, physical quantum computers; their promising applications and dangers they may pose. The content is heavily based on chapter 20 of the book "\textit{Computational Complexity: A Modern Approach}" by S. Arora and B. Barak \cite{thebook}. The aim is to explain the subject in an easy-to-follow way without sacrificing formality.
+\subsection{Introduction to quantum mechanics}
+Quantum mechanics developed as a theoretical solution to experimental results impossible to explain with classical mechanics such as the photoelectric effect and quantization of energy in the hydrogen atom. Its fundamental idea was to treat all matter both as a particle and a wave.
+\subsubsection{The wave-function}
+In classical mechanics, the state of a particle was fully described only using its position and momentum. Quantum mechanics has introduced the concept of wave-function - $\psi$ - which encodes all information about the state of the system. It is the solution to a particular partial differential equation - the Schrödinger equation:
 \begin{align*}
   i \hbar \frac{d}{dx} \psi=-\frac{\hbar^2}{2m}\nabla^2 \psi + V(x,y)\psi 
 \end{align*}
-In spite of $\psi$ being the solution to the equation, the physically measurable value is $|\psi|^2$. All the mathematical formalism matches the physical experiments. However, we are left with the conundrum of how to interpret this. \\\\
-\subsection{Probabilistic Interpretation}
-According to the most widely accepted explanation postulated by Niels Bohr - the Copenhagen interpretation - $|\psi|^2$ represents a probabilistic density of the position of the particle in the given moment.
+where $\hbar$ is the reduced Planck constant, $m$ is the mass of the particle, and $V(x,y)$ is the potential representing the environment.\\\\
+Researchers have long discussed how to interpret the wave-function. According to the most widely accepted explanation postulated by Niels Bohr - called the Copenhagen interpretation or probabilistic interpretation - $|\psi|^2$ represents a probabilistic density of the position of the particle in the given moment:
 \begin{align*}
   |\psi(\vec{x},t)|^2=\rho(\vec{x},t)
 \end{align*}
-Moreover this interpretation stipulates that before we measure the state of the particle it is in no particular state, it is in superposition of all the possible spaces. Only after measurement does its state change immediately at random with $|\psi|^2$ as its density function, which is called quantum wave collapse.\\
+Moreover, this interpretation stipulates that before we measure the state of the particle, it is in no particular state; it is in a so-called superposition of all the possible states. Only after measurement, the state becomes one of the possibilities; it happens immediately, at random with $|\psi|^2$ as the density function. This phenomenon is called the quantum wave collapse.\\
 
-\subsection{Notation}
-Quantum states form vector spaces on $\mathbb{C}$, known as the Hilbert space and denoted as $\mathcal{H}$, their members are column vectors, which in dirac notation are denoted as $\ket{\psi}$.\\ We can similarly define a dual space $\mathcal{H}^*$ - the space of functions $\mathcal{H} \rightarrow \mathbb{C}$, its members are row vectors in the Dirac notation denoted as $\bra{\psi}$.\\\\
+\subsubsection{Entanglement}
+Quantum entanglement is a phenomenon when a state of two (or more) particles cannot be fully described independently of the state of other particles. Crucially, there is no way to write the state of a group of particles as a sum of the states of the component systems. \\\\
+Consider two particles that are both in superposition between state 0 and 1; therefore, after measurement, they become 0 or 1 with certain probabilities. We may entangle them in such a way that, if we know that one particle was measured to be in state 0, then it is certain that the other is in state 0 and vice versa. We cannot describe the state of one particle without considering the state of the other one; therefore, they are entangled.\\\\
+Entanglement leads to seemingly paradoxical results. Consider the thought experiment first discussed by Einstein, Podolsky, and Rosen in 1935 \cite{epr}:
+\paragraph{EPR paradox}
+
+Suppose we create a pair of entangled particles. We give one particle to Alice and the other to Bob, and then send them far apart, to the other end of the galaxy. If Alice performs a measurement on her state, it instantaneously collapses to one of the states. Bob can then quickly measure his state and know exactly what value Alice's qubit is in, in spite of the distance between them. This process seems to convey information faster than light.\\
+This suggests that some kind of information about the measurement outcome has been transmitted faster than light, which contradicts our classical understanding of causality and locality.\\\\
+This paradox is based on the following assumptions:
+\begin{itemize}
+    \item (Completeness) Every element of reality has a counterpart in theory
+    \item (Reality) We can predict with certainty value of physical quantity without disturbing the system.
+    \item (Locality) Element cannot be instantaneously affected by measurements performed on another system distant from them
+\end{itemize}
+Einstein and his co-authors assumed all the assumptions were correct; therefore, they concluded that quantum mechanics must be incomplete; there are some hidden variables in the entangled states.\\\\
+However John Bell showed in 1964 \cite{bell} that quantum mechanics cannot be explained with hidden variables. This mathematical result was later confirmed experimentally by Alain Aspect \cite{aspect}. It follows that if we assume quantum mechanics to be complete one of the assumptions - typically reality or locality - must be abandoned.
+\subsection{Algebraic formulation of quantum mechanics}
+Quantum mechanics is most conveniently described using the language of linear algebra. To express quantum states, and operations on them in a concise way we use the Dirac notation, also called the bra-ket notation.
+\subsubsection{Hilbert Space}
+Quantum states form vector space on $\mathbb{C}$, known as the Hilbert space and denoted as $\mathcal{H}$. Its members - quantum states are denoted by a ket, written $\ket{\psi}$.\\\\ We  similarly define a dual space $\mathcal{H}^*$ - the space of functions $\mathcal{H} \rightarrow \mathbb{C}$, its members are row vectors in the Dirac notation denoted as bra, and written $\bra{\psi}$.\\\\
 $\bra{\psi}$ is a hermitian conjugate of $\ket{\psi}$, which means that if $$\ket{\psi}=\begin{bmatrix}a_1 \\a_2 \\\vdots \\a_n\end{bmatrix}$$ then $$\bra{\psi}=\begin{bmatrix}a_1^*&a_2^* &\dots & a_n^*\end{bmatrix}$$
-We can thus define an inner (scalar) product between $\ket{\psi}=\begin{bmatrix}a_1^ &\dots & a_n\end{bmatrix}^T$ and $\ket{\theta}=\begin{bmatrix}b_1 &\dots & b_n\end{bmatrix}^T$ as
+We can thus define an inner (scalar) product between $\ket{\psi}={\begin{bmatrix}a_1^ &\dots & a_n\end{bmatrix}}^T$ and $\ket{\theta}=\begin{bmatrix}b_1 &\dots & b_n\end{bmatrix}^T$ as
 $$\braket{\psi| \theta}=a_1^*b_1 + a_2^* b_2 + \dots + a_n^* b_n$$ 
-\subsection{Measurement}
+\subsubsection{Quantum Measurement}
 As we discussed earlier, before measurement the quantum state is in no particular state, but only after measurement it collapses to one of the states. We can calculate the probability of obtaining the state $\ket{\phi}$ using inner product 
 $$P(\ket{\phi_i})=|\braket{\phi_i | \psi}|^2$$
 We interpreted $\psi$ as the density function of probability, therefore it must be normalised, $\braket{\psi|\psi}=1$, to ensure that the probabilities of obtaining the states sum up to 1.
-\subsection{Operators}
+\subsubsection{Quantum Operators}
 Operators are functions $\mathcal{H} \rightarrow \mathcal{H}$, for operator $Q$:
 $$Q \ket{\psi}=\ket{Q\psi}=\ket{\psi'}\in \mathcal{H}$$
 We commonly use shorthand notation $$\braket{\psi | Q| \theta} := \braket{\psi | Q  \theta}$$
@@ -31,8 +51,16 @@ $$Q(a_1 \ket{\psi_1}+a_2 \ket{\psi_2})=a_1 Q \ket{\psi_1} + a_2 Q \ket{\psi_2}$$
 Hermitian adjoint $Q^\dagger$ to $Q$ is an operator such that 
 $$\braket{\psi|Q\theta}=\braket{Q^\dagger \psi |\theta}$$
 Operator $Q$ is called hermitian if $Q=Q^\dagger$.
-
-\subsection{Qubit}
+\paragraph{Quantum gates}
+Quantum gates are quantum operators operating on a reduced number of qubits. Similar to classical logic gates, they are the building block of quantum circuits. The most commonly used gates are 
+\begin{itemize}
+  \item Pauli-X, the not gate $X=\sigma_x=\begin{pmatrix}0 & 1 \\ 1 & 0 \end{pmatrix}$
+  \item Pauli-Y, $Y=\sigma_y=\begin{pmatrix}0 & -i \\ i & 0 \end{pmatrix}$
+  \item Pauli-Z, $Z=\sigma_z=\begin{pmatrix}1 & 0 \\ 0 & -1 \end{pmatrix}$
+  \item Hadamard, $H=\frac{1}{\sqrt{2}}\begin{pmatrix}1 & 1 \\ 1 & -1 \end{pmatrix}$
+  \item Phase shift - $P(\phi)=\begin{pmatrix}1 & 0 \\ 0 & e^{i\phi} \end{pmatrix}$, it maps $\ket{0}\rightarrow \ket{0}$ and $\ket{1}\rightarrow e^{i\phi}\ket{1}$.
+\end{itemize}
+\subsubsection{Qubit - quantum analogue to the bit}
 The qubit is the quantum analogue to the bit; it is the simplest quantum mechanical system. It has a two-dimensional state space, and thus its orthonormal basis is formed by two orthogonal vectors $\ket{0}$ and $\ket{1}$. By convention, we use $\ket{0}=[1,0]$ and $\ket{1}=[0,1]$. An arbitrary qubit $\ket{\psi}$ can therefore be fully described as
 \begin{align*}
     \ket{\psi}=a\ket{0}+b\ket{1}
@@ -43,35 +71,25 @@ Qubit must satisfy the normalization factor for state vectors
 \end{align*}
 which for qubits means that
 \begin{align*}
-    a^2+b^2=1
+    |a|^2+|b|^2=1
 \end{align*}
-The key difference between a bit and a qubit is that when a bit can only be in either state $0$ or $1$, qubit can be in superposition of states $\ket{0}, \ket{1}$, meaning that it is in both states at once and only after measurement it becomes one of them with probabilities proportional to $a,b$.
+The key difference between a bit and a qubit is that when a bit can only be in either state $0$ or $1$, a qubit can be in a superposition of states $\ket{0}, \ket{1}$, meaning that it is in both states at once and only after measurement does it become one of them with probabilities proportional to $a,b$.
+\\
+Multiple qubit states can be simply written as a tensor product of individual qubit states, such as:
+\begin{align*}
+\ket{\psi} = \left( \frac{1}{\sqrt{2}}(\ket{0} + \ket{1}) \right) \otimes \ket{0}=\frac{1}{\sqrt{2}}\left(\ket{00}+\ket{10}\right)
+\end{align*}
+However, tensor product notation requires the states to be separable. As we discussed earlier, entangled states cannot be written as a composition of multiple states, such as: 
+\begin{align*}
+\ket{\psi} = \frac{1}{\sqrt{2}}(\ket{00} + \ket{11})
+\end{align*}
+\subsubsection{The Bloch Sphere}
+A single qubit state $\ket{\psi} = a\ket{0} + b\ket{1}$ with normalisation $|a|^2 + |b|^2 = 1$ can be geometrically represented using the Bloch sphere - a unit sphere in three-dimensional space.
+\begin{align*}
+    \ket{\psi} = \cos\left(\frac{\theta}{2}\right)\ket{0} + e^{i\phi} \sin\left(\frac{\theta}{2}\right)\ket{1}
+\end{align*}
+where $\theta \in [0, \pi]$ and $\phi \in [0, 2\pi)$ are spherical coordinates.\\
 
+In this parametrisation, each point on the surface of the sphere corresponds to a unique qubit state (up to a global phase), and the north and south poles correspond to the classical states $\ket{0}$ and $\ket{1}$, respectively.\\
 
-\subsection{Quantum gates}
-Quantum gates are quantum operators operating on a reduced number of qubits. Similar to classical logic gates, they are the building block of quantum circuits. The most commonly used gates are 
-\begin{itemize}
-  \item Pauli-X, the not gate $X=\sigma_x=\begin{pmatrix}0 & 1 \\ 1 & 0 \end{pmatrix}$
-  \item Pauli-Y, $Y=\sigma_y=\begin{pmatrix}0 & -i \\ i & 0 \end{pmatrix}$
-  \item Pauli-Z, $Z=\sigma_z=\begin{pmatrix}1 & 0 \\ 0 & -1 \end{pmatrix}$
-  \item Hadamard, $H=\frac{1}{\sqrt{2}}\begin{pmatrix}1 & 1 \\ 1 & -1 \end{pmatrix}$
-  \item Phase shift - $P(\phi)=\begin{pmatrix}1 & 0 \\ 0 & e^{i\phi} \end{pmatrix}$, it maps $\ket{0}\rightarrow \ket{0}$ and $\ket{1}\rightarrow e^{i\phi}\ket{1}$.
-\end{itemize}
-\subsection{Entanglement}
-Consider the following two qubit state
-\begin{align}
-    \ket{\psi}=\frac{\ket{00}+\ket{11}}{\sqrt{2}}
-\end{align}
-this notation means that either both qubits are $\ket{0}$ or both are $\ket{1}$.
-If there are no single qubits $\ket{a}$, $\ket{b}$ such that $\ket{\psi}=\ket{a}+\ket{b}$ then we say that $\ket{\psi}$ is an entangled state.\\\\
-\subsubsection{EPR paradox}
-Quantum entanglement is a fundamental concept from which we can conclude seemingly paradoxical results.\\\\
-Consider two entangled qubits from the states $\ket{\psi}$, $A$ and $B$. Before measurement they are in superposition between states $\ket{0}$ and $\ket{1}$ and entangled in such a way that after measurement both become $\ket{0}$ or both become $\ket{1}$. Now, suppose that we give qubit $A$ to Alice and $B$ to Bob, Alice, and Bob then travel far apart. If Alice performs a measurement on her qubit, it instantaneously collapses to one of the states. Bob can then quickly measure his qubit and know exactly what value Alice's qubit is in, in spite of the distance between them. This process seems to convey information faster than light.\\\\
-This process is a simplification of the famous EPR paradox formed by Einstein Podolsky and Rosen in 1935 \cite{epr}. It can have two possible explanations; either during the thought experiment, we made an incorrect assumption or there is some hidden variable in the qubits.\\
-We made the following assumptions.
-\begin{itemize}
-    \item (Completeness) Every element of reality has a counterpart in theory
-    \item (Reality) We can predict with certainty value of physical quantity without disturbing the system.
-    \item (Locality) Element cannot be instantaneously affected by measurements performed on another system distant from them
-\end{itemize}
-As Bell showed theoretically \cite{bell}, and then later was shown experimentally by Alain Aspect \cite{aspect} quantum mechanics cannot be explained by including any hidden variables, therefore if we assume quantum mechanics to be complete either reality or locality assumption must be abandoned. 
+This representation is particularly useful for visualising the effect of quantum gates such as Pauli X, Y, Z gates that correspond to state vector rotation by $\pi$ radians in the X, Y, Z axes respectively. We can also utilize it to visualise the superposition of orthogonal states, as we'll see in the analysis of Grover's algorithm.

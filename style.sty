@@ -26,6 +26,8 @@
 \usepackage{fancyhdr}
 
 \usepackage{mathrsfs}
+\usepackage{algorithm}
+\usepackage{algorithmic}
 \pagestyle{fancy}
 \fancyhf{}
 
@@ -68,13 +70,15 @@
 
 \usepackage{chngcntr}
 \counterwithout{section}{chapter}
-\setcounter{secnumdepth}{2}
+\setcounter{secnumdepth}{3}
 \renewcommand{\thechapter}{\Roman{chapter}}
 % Move the top of the header closer to the page top
-\titleformat{\section}[display]{\Large\bfseries\filcenter}{\thesection}{0.5em}{}
+\titleformat{\section}[display]{\LARGE\bfseries\filcenter}{\thesection}{}{}
 % Move the top of the header closer to the page top
 % Move the top of the header closer to the page top
-\titleformat{\subsection}{\large\bfseries\filcenter}{\thesubsection}{0.5em}{}
+\titleformat{\subsection}{\Large\bfseries\filcenter}{\thesubsection}{0.5em}{}
+\titleformat{\subsubsection}{\large\bfseries\filcenter}{\thesubsubsection}{0.5em}{}
+
 \counterwithin*{footnote}{page}
 
 
@@ -89,6 +93,6 @@
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{corollary}{Corollary}[theorem]
 \newtheorem{lemma}[theorem]{Lemma}
-\setcounter{tocdepth}{2}
+\setcounter{tocdepth}{3}
 
-
+\setlength{\parindent}{0pt}

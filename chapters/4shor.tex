@@ -1,40 +1,89 @@
 \section{Shor's Algorithm}
-Shor's Algorithm allows us to solve integer factorization problem in polynomial time using quantum computer. That is, given integer N the algorithm finds the set of all prime factors of N - prime number that divide N. Many attempts have been made to find a classical, polynomial algorithm with no apparent success, the best known classical solution is roughly $O(2^{(\log N)^{1/3}})$ \cite{thebook}, as a result Shor's algorithm is considered the strongest premise that $\mathtt{BQP}$ is not equal to $\mathtt{BPP}$.
+Shor's Algorithm allows us to solve the integer factorization problem in polynomial time using a quantum computer. That is, given an integer $N$, the algorithm finds the set of all prime factors of $N$ - prime numbers that divide $N$. Many attempts have been made to find a classical, polynomial algorithm with no apparent success; the best-known classical solution is roughly $O(2^{(\log N)^{1/3}})$ \cite{thebook}, Shor's algorithm is considered the strongest premise that $\mathtt{BQP}$ is not equal to $\mathtt{BPP}$.
 \subsection{Reduction to order-finding}
-To achieve such an astounding reduction in complexity we have to reduce our problem of finding prime factors to a simpler problem. We easily see that to find all prime factors it is sufficient to be able to find a single non trivial prime factor, divide the original number by it and run the algorithm again. If we continue this procedure and store found factors we will solve the original problem as every number has a unique prime factorization.
+To achieve such an astounding reduction in complexity, we have to reduce our problem of finding prime factors to a simpler problem. We easily see that to find all prime factors, it is sufficient to be able to find a single non-trivial prime factor, divide the original number by it, and run the algorithm again. If we continue this procedure and store the found factors, we will solve the original problem as every number has a unique prime factorisation.
 \\\\
 We now want to reduce this problem further to the problem of order finding. For a number $N$ we take a random value $a$ from the set of $\{2,\dots,N-1\}$. If we find the smallest number $s$ such that
 \begin{align*}
     a^s=1\mod{N}
 \end{align*}
-that is, find the period of $a$ and assume that $s$ is odd than we can rewrite it as
+that is, find the period of $a$ and assume that $s$ is odd then we can rewrite it as  
 \begin{align*}
     a^s-1&=0 \mod{N}\\
     (a^{s/2}+1)(a^{s/2}-1)&=0 \mod{N}\\
     (a^{s/2}+1)(a^{s/2}-1)&=kN
 \end{align*}
-now, if $a^{s/2}<N$ then we now that
+now, if $a^{s/2}<N$ then we know that  
 \begin{align*}
     N|(a^{s/2}-1)(a^{s/2}+1)
 \end{align*}
-Note that from the condition $a^{s/2}<N$ one could assume that $a^{s/2}+1$ can be $N$, however this would imply that $a^{s/2}=1 \mod{N}$, which contradicts the fact that $s$ is the smallest number for which $a^{s}=1 \mod{N}$. Therefore both $\gcd(a^{s/2}\pm 1,N)<N$.
+Note that from the condition $a^{s/2}<N$ one could assume that $a^{s/2}+1$ can be $N$, however this would imply that $a^{s/2}=-1 \mod{N}$, which contradicts the fact that $s$ is the smallest number for which $a^{s}=1 \mod{N}$. Therefore both $\gcd(a^{s/2}\pm 1,N)<N$.
 \\\\
-From this we see that $\gcd(a^{s/2}\pm 1,N)$ are a factors of $N$, which we can compute classically, in polynomial time using Euclid's algorithm.\\\\
-During the process we made two assumptions, $s$ is even and $a^{s/2}\neq \pm 1 \mod{N}$. Both of those conditions are easily checked classically, we can also bound the probability of it not happening (s being valid) to be at least 1/4 \cite{thebook}. If it happens, we simply choose different $a$ and repeat the process. 
-\\\\
-We see that we reduced our factoring problem to the order finding problem - finding the order of a number in $\mathbb{Z}_N$. This problem itself is also $\mathtt{NP}$-hard using classical approach, however we can exploit quantum Fourier transform to prove that it belongs to $\mathtt{BQP}$.
+From this we see that $\gcd(a^{s/2}\pm 1,N)$ are factors of $N$, which we can compute classically, in polynomial time using Euclid's algorithm.
+During the process, we made two assumptions: $s$ is even and $a^{s/2}\neq -1 \mod{N}$. Both of those conditions are easily checked classically; we can also bound the probability of it not happening ($s$ being valid) to be lower than 1/4 \cite{thebook}, for the algorithm to be valid, it is sufficient for us to prove that it is higher than 1/2.\\\\
+We see that we reduced our factoring problem to the order finding problem - finding the order of a number in $\mathbb{Z}_N$. This problem itself is also $\mathtt{NP}$-hard using classical approach; however, we can exploit quantum Fourier transform to prove that it belongs to $\mathtt{BQP}$.
+\subsubsection{Bounding the probability of success}
+In order to prove the bound, we will prove the following algebraic theorem. 
+\begin{theorem}
+ Let $N$ be an odd, non-prime, and composite number. We randomly choose a residue $a \mod{N}$, and let $s$ be the order of $a \mod{N}$. The probability that event: 
+ \begin{itemize}
+     \item $s$ is odd
+     \item $a^{s/2}=-1 \mod{N}$ 
+ \end{itemize}
+  does not exceed 1/2.
+  \end{theorem}
+ \begin{proof}
+     As $N$ is complex we know that $N=p_1^{\alpha_1} \cdot p_2^{\alpha_2} \cdot \dots p_k^{\alpha_k}$
+     where $k\geq 2$, it is prime decomposition of $N$.\\
+     From the Chinese Remainder theorem, we know that choosing $a$ is equivalent to choosing $k$ independent residues of $a_i \mod p_i^{\alpha_i}$. Let $s_i$ be the order of $a_i \mod{p_i^{\alpha_i}}$. Then $s=\text{lcm}\{s_1,\dots, s_k\}$. \\
+     For $s$ to be odd, all $s_i$ must be odd. Notice that if for any $i$, $2s_i|s$, then $a^{s/2}$ is a power of $a_i$, which means $a^{s/2}=1 \mod{p_i^{\alpha_i}}$, therefore from the Chinese Remainder theorem it follows that $a^{s/2} \neq 1 \mod{N}$.
+     \\Therefore a necessary condition for $a^{s/2}=-1 \mod{N}$ is that the power of $2$ in the prime decomposition of $s_i$ is equal for all $i$. Thus it is the necessary condition for both events: $s$-odd and $a^{s/2}=-1 \mod{N}$. \\
+     To bound the chance of fulfilling this condition, we use the fact that the group $G_i=\mathbb{Z}^*_{p_i^{\alpha_i}}$ is always cyclic. As it is cyclic, we know it has some generator $g$ with order $(p_i-1)\cdot p_i^{\alpha_i-1}$. Consider the sets 
+     \begin{align*}
+         G_i'&=\{g^1, g^3, g^5, \dots\} & G_i''&=\{1,g^2, g^4, \dots\} 
+     \end{align*}
+     Those sets are adjoint, equal in size and $G_i' \cup G_i''=G$. The order of every element in $G'$ has the same amount of twos in its decomposition as $t$, the order of elements in $G_i''$ must have fewer twos. This means that for all given $q$, and a random element in $G_i$, we always have $50\%$ chance of getting an element from $G_i''$, thus of not getting an element that has exactly $q$ twos. 
+     \\
+     It follows that for random choosing of $a_1, a_2, \dots a_k$, the event that the amount of twos in their factorization is equal, happens with probability at most $\frac{1}{2^{k-1}}\leq 1/2$.
+ \end{proof}
+
+
+
+
 \input{chapters/4fourier}
 \input{chapters/4order}
 \subsection{Bringing it together}
-In the algorithm we classically check if algorithm is prime, which can be done with AKS algorithm in deterministic, polynomial time \cite{Agrawal2004}. We also compute greatest common divisor which can be solved using Euclid in algorithm $O(\log{(m+n)})$ \cite{cormen2009}.
-\\\\
-We use the following subroutine recursively until $N$ is prime. In each subsequent call we 
-\begin{itemize}
-    \item Check if $N$ is not prime, if it is return it.
-    \item Check if $N$ is even, if it is return $2$.
-    \item Draw number $a$ uniformly from $\{2, \dots, N-1\}$.
-    \item Compute the order $s$ of $a$.
-    \item Check if $s$ is even and $y^{r/2}\neq \pm1 \mod N$, if not go back to step 3.
-    \item Compute $\gcd(a^{s/2}\pm 1,N)$ and return non-trivial factors.
-\end{itemize}
-We use the check $y^{r/2}\neq \pm1 \mod N$ to ensure that we cannot find two non-trivial factors.\\
+As the algorithm has many steps we present a classical wrapper, function that uses presented quantum subroutines to find the factor of $N$, as discussed earlier it can be later used to find full factorisation:
+\begin{algorithm}
+\caption{QuantumFactor(N)}
+\begin{algorithmic}[1]
+\IF{$N$ is prime}
+    \RETURN $N$
+\ENDIF
+\IF{$N \bmod 2 = 0$}
+    \RETURN $2$
+\ENDIF
+\LOOP
+    \STATE Choose $a$ uniformly at random from $\{2, \dots, N-1\}$
+    \STATE $d \gets \gcd(a, N)$
+    \IF{$d > 1$}
+        \RETURN $d$
+    \ENDIF
+    \STATE $r \gets$ QuantumOrderFinding($a$, $N$)
+    \IF{$r$ is odd \OR $a^{r/2} \equiv \pm1 \mod N$}
+        \STATE \textbf{continue}
+    \ENDIF
+    \STATE $f_1 \gets \gcd(a^{r/2} - 1, N)$
+    \STATE $f_2 \gets \gcd(a^{r/2} + 1, N)$
+    \IF{$1 < f_1 < N$}
+        \RETURN $f_1$
+    \ELSIF{$1 < f_2 < N$}
+        \RETURN $f_2$
+    \ENDIF
+\ENDLOOP
+\end{algorithmic}
+\end{algorithm}
+\\
+We use the check $y^{r/2}\neq \pm1 \mod N$ to ensure that we cannot find two trivial factors - either $1$ or $N$ -  therefore either $f_1$ or $f_2$ must be a non-trivial factor.\\\\
+In the algorithm, we classically check if the number is prime, which can be done with the AKS algorithm in deterministic, polynomial time \cite{Agrawal2004}. We also compute the greatest common divisor, which can be solved using Euclid's algorithm in $O(\log{(m+n)})$ \cite{cormen2009}.
+
